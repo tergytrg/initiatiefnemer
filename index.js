@@ -70,12 +70,12 @@ function roll(args, user) {
     }
     total += bonus;
     iInsert(new Inititative(total, bonus, roller)); // nieuw ding maken en toevoegen
-    return roller + " heeft gerold: [" + roll1 + ",  " + roll2 + "], + " + bonus + " = " + total;
+    return roller + " heeft gerold: [" + roll1 + ",  " + roll2 + "] + " + bonus + " = \`" + total + "\`";
   }
 
   const total = roll1 + bonus;
   iInsert(new Inititative(total, bonus, roller)); // nieuw ding maken en toevoegen
-  return roller + " heeft gerold: " + roll1 + " + " + bonus + " = " + total;
+  return roller + " heeft gerold: " + roll1 + " + " + bonus + " = \`" + total + "\`";
 }
 
 
