@@ -53,7 +53,7 @@ function roll(args, user) {
         if (arg == "k1") {
             k1 = true;
         } else if (isNaN(arg)) {
-            roller += arg + " ";
+            roller += " " + arg;
         } else {
             bonus = parseInt(arg);
         }
