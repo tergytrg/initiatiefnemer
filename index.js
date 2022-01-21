@@ -45,7 +45,7 @@ function insertInit(newInit) { // Een nieuwe Initiative invoegen
 function roll(args, user) {
     const roll1 = Math.ceil(Math.random() * 20);
     let bonus = 0;
-    let roller = user // Als er geen naam bij zit, wordt de stuurder genoemd.
+    let roller = "";
     let k1 = false;
 
     while (args.length > 0) { // Alle args bijlangs gaan en kijken wat ze doen
@@ -53,10 +53,13 @@ function roll(args, user) {
         if (arg == "k1") {
             k1 = true;
         } else if (isNaN(arg)) {
-            roller = arg;
+            roller += arg + " ";
         } else {
             bonus = parseInt(arg);
         }
+    }
+    if (roller === "") {
+        roller = user; // Als er geen naam bij zit, wordt de stuurder genoemd.
     }
     // Met advantage:
     if (k1) {
