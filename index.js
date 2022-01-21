@@ -25,7 +25,7 @@ function Inititative(total, bonus, user) { // Init constructor
 }
 
 Inititative.prototype.toString = function() {
-  return this.user + ": \`" + this.total + "\`\n";
+  return this.user + ": \`" + this.total + "\`";
 }
 
 function iInsert(newRoll) {
@@ -114,12 +114,20 @@ client.on('message', msg => {
 
   // De initiative lijst opvragen:
   if (command === 'start') {
+    let resString = "**__Initiative gestart:__**";
+    if (iRolls.length == 0) {
+      resString = "Geen initiatives";
+    } else {
+      for (let i = 0; i < iRolls.length; i++) {
+        resString += "\n" + iRolls[i].toString();
+      }
+    }
     let channel;
     try {
       channel = client.channels.get(CHANNEL); // Specifiek initiative kanaaltje is wel handig.
-      channel.send("**__Initiative gestart:__**:\n" + iRolls.toString());
+      channel.send(resString);
     } catch (error) {
-      msg.channel.send("**__Initiative gestart:__**\n" + iRolls.toString()); // Als hij het kanaal niet kan vinden, dan stuurt ie het gewoon in hetzelfde kanaal als waar commando verzonden is.
+      msg.channel.send(resString); // Als hij het kanaal niet kan vinden, dan stuurt ie het gewoon in hetzelfde kanaal als waar commando verzonden is.
     }
     iRolls = [];
     index = 0;
@@ -139,7 +147,7 @@ client.on('message', msg => {
     }
     let resString = "";
     for (let i = 0; i < iRolls.length; i++) {
-      resString += i + ": " + iRolls[i].toString();
+      resString += i + ": " + iRolls[i].toString() + "\n";
     }
     msg.channel.send(resString);
   }
