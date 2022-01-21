@@ -22,6 +22,19 @@ function Inititative(total, bonus, user) { // Init constructor
   this.user = user;
 }
 
+function iInsert(init) {
+  if (iRolls.length == 0) {
+    iRolls[0] = init;
+  } else {
+    let i = 0;
+    while (i < iRolls.length && init.total < iRolls[i].total) { // Insertion sort ftw!!!!
+      i++;
+    }
+    iRolls.splice(i, 0, init);
+    i = 0;
+  }
+}
+
 Inititative.prototype.toString = function() {
   return "\n" + this.user + ": " + this.total + " (waarvan bonus: " + this.bonus + ")";
 }
@@ -47,10 +60,13 @@ client.on('message', msg => {
    * Ik heb wel wat andere bestandjes gemaakt voor simpele commando's, hier kunnen we dan makkelijk aan toevoegen */ 
   if (command === 'init') {
     const roll = Math.ceil(Math.random() * 20);
+    if (args.length == 0) {
+      args[0] = 0;
+    }
     const bonus = parseInt(args[0]);
     const total = roll + bonus;
     msg.channel.send(msg.author + " heeft gerold: " + roll + " + " + bonus + " = " + total);
-    iRolls[index++] = new Inititative(total, bonus, msg.author); // nieuw ding maken en toevoegen
+    iInsert(new Inititative(total, bonus, msg.author)); // nieuw ding maken en toevoegen
   }
 
   if (command === 'igen') {
@@ -68,6 +84,7 @@ client.on('message', msg => {
   if (command === 'iclear') {
     iRolls = [];
     index = 0;
+    msg.channel.send("Initiative leegemaakt!")
   }
 
   if (!client.commands.has(command)) return; // Dit is voor alle "simpele" commands
