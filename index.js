@@ -59,7 +59,7 @@ function roll(args, user) {
         }
     }
     if (roller === "") {
-        roller = user; // Als er geen naam bij zit, wordt de stuurder genoemd.
+        roller = " " + user; // Als er geen naam bij zit, wordt de stuurder genoemd.
     }
     // Met advantage:
     if (k1) {
