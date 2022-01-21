@@ -1,4 +1,5 @@
 require('dotenv').config(); // Voor tokentje
+const { timeStamp } = require('console');
 const { channel } = require('diagnostics_channel');
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -12,18 +13,22 @@ Object.keys(clientCommands).map(key => {
 const TOKEN = process.env.TOKEN;
 client.login(TOKEN);
 
+let iRolls = [];
+let index = 0;
+
+function Inititative(total, bonus, user) { // Init constructor
+  this.total = total;
+  this.bonus = bonus;
+  this.user = user;
+}
+
+Inititative.prototype.toString = function() {
+  return "\n" + this.user + ": " + this.total + " (waarvan bonus: " + this.bonus + ")";
+}
+
 client.on('ready', () => {
   console.info(`Ingelogd als ${client.user.tag}!`);
 });
-
-let iRolls = [];
-let iStrings = [];
-let index = 0;
-
-function newInit(total, user) {
-  iStrings[index] = "\n" + user + ": " + total;
-  iRolls[index++] = total;
-}
 
 // Zodra wij een berichtje krijgen: 
 client.on('message', msg => {
@@ -45,24 +50,24 @@ client.on('message', msg => {
     const bonus = parseInt(args[0]);
     const total = roll + bonus;
     msg.channel.send(msg.author + " heeft gerold: " + roll + " + " + bonus + " = " + total);
-    newInit(total, msg.author);
+    iRolls[index++] = new Inititative(total, bonus, msg.author); // nieuw ding maken en toevoegen
   }
 
   if (command === 'igen') {
     let channel;
     try {
       channel = client.channels.get("933891892117143593"); // Specifiek initiative kanaaltje is wel handig.
-      channel.send("Totale initiatives: " + iStrings.toString());
+      channel.send("Totale initiatives: " + iRolls.toString());
     } catch (error) {
-      msg.channel.send("Totale initiatives: " + iStrings.toString()); // Als hij het kanaal niet kan vinden, dan stuurt ie het gewoon in hetzelfde kanaal als waar commando verzonden is.
+      msg.channel.send("Totale initiatives: " + iRolls.toString()); // Als hij het kanaal niet kan vinden, dan stuurt ie het gewoon in hetzelfde kanaal als waar commando verzonden is.
     }
     iRolls = [];
-    iStrings = [];
+    index = 0;
   }
 
   if (command === 'iclear') {
     iRolls = [];
-    iStrings = [];
+    index = 0;
   }
 
   if (!client.commands.has(command)) return; // Dit is voor alle "simpele" commands
