@@ -102,10 +102,6 @@ client.on('message', msg => {
 
     // De meestgebruikte commando: Een initiative check.
     if (command === 'init') {
-        if (args.length > 3) {
-            msg.reply("dit herken ik niet. Stuur zoiets: \`!init <bonus> <naam> <k1>\`");
-            return;
-        }
         msg.channel.send(roll(args, msg.author));
     }
 
