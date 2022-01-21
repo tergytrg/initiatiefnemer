@@ -1,7 +1,7 @@
 module.exports = {
   name: 'rol',
-  description: 'Simpele d20',
+  description: 'Typo',
   execute(msg, args) {
-    msg.channel.send('Je hebt gerold: ' + Math.ceil(Math.random() * 20));
+    msg.channel.send("Leer typen :)");
   },
 };
