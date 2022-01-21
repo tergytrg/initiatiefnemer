@@ -58,8 +58,8 @@ function roll(args, user) {
             bonus = parseInt(arg);
         }
     }
-
-    if (k1) { // Met advantage
+    // Met advantage:
+    if (k1) {
         const roll2 = Math.ceil(Math.random() * 20); // Dus nog een dobbelsteen gooien
         let total = roll2;
         if (roll1 > roll2) {
@@ -69,8 +69,8 @@ function roll(args, user) {
         insertInit(new Inititative(total, bonus, roller)); // nieuw ding maken en toevoegen
         return roller + " heeft gerold: [" + roll1 + ",  " + roll2 + "] + " + bonus + " = \`" + total + "\`";
     }
-
-    const total = roll1 + bonus; // Zonder advantage
+    // Zonder advantage:
+    const total = roll1 + bonus;
     insertInit(new Inititative(total, bonus, roller)); // nieuw ding maken en toevoegen
     return roller + " heeft gerold: " + roll1 + " + " + bonus + " = \`" + total + "\`";
 }
@@ -100,7 +100,7 @@ client.on('message', msg => {
     // De meestgebruikte commando: Een initiative check.
     if (command === 'init') {
         if (args.length > 3) {
-            msg.reply("Dit herken ik niet. Stuur zoiets: \`!init <bonus> <naam> <k1>\`");
+            msg.reply("dit herken ik niet. Stuur zoiets: \`!init <bonus> <naam> <k1>\`");
             return;
         }
         msg.channel.send(roll(args, msg.author));
@@ -130,13 +130,13 @@ client.on('message', msg => {
     // De inititative lijst leegmaken:
     if (command === 'reset') {
         initList = [];
-        msg.reply("Initiative leegemaakt!")
+        msg.reply("initiative leegemaakt!")
     }
 
     // De initiative lijst bekijken:
     if (command === 'view') {
         if (initList.length == 0) {
-            return msg.reply("Geen initiatives");
+            return msg.reply("geen initiatives");
         }
         let resString = "";
         for (let i = 0; i < initList.length; i++) {
@@ -148,26 +148,26 @@ client.on('message', msg => {
     // Iets verwijderen uit de initiative lijst
     if (command === 'remove') {
         if (args.length != 1) {
-            msg.reply("Dit herken ik niet. Stuur zoiets: \`!remove <positie>\`");
+            msg.reply("dit herken ik niet. Stuur zoiets: \`!remove <positie>\`");
         } else {
             initList.splice(parseInt(args[0]), 1);
-            msg.reply("Rol " + args[0] + " verwijderd!");
+            msg.reply("rol " + args[0] + " verwijderd!");
         }
     }
 
     // Iets toevoegen aan de initiative lijst
     if (command === 'insert') {
         if (args.length != 3) {
-            msg.reply("Dit herken ik niet. Stuur zoiets:\`!insert <rol> <bonus> <naam>\`");
+            msg.reply("dit herken ik niet. Stuur zoiets:\`!insert <rol> <bonus> <naam>\`");
         } else {
             insertInit(new Inititative(args[0], args[1], args[2]));
-            msg.reply("Initiative toegevoegd: " + args.toString());
+            msg.reply("initiative toegevoegd: " + args.toString());
         }
     }
 
     // Alle commando's met uitleg
     if (command === 'help') {
-        const init = "\`!init <bonus> <naam> <k1>\` : maakt een initiative roll.\n"
+        const init = "\`!init <bonus> <naam> <k1>\` : Maakt een initiative roll.\n"
         const start = "\`!start\` : Start de initiative.\n"
         const view = "\`!view\` : Stuurt de initiative lijst.\n"
         const insert = "\`!insert <rol> <bonus> <naam>\` : Voeg handmatig een rol toe aan initiative.\n"
@@ -183,6 +183,6 @@ client.on('message', msg => {
         client.commands.get(command).execute(msg, args);
     } catch (error) {
         console.error(error);
-        msg.reply("Ik weet het ff niet meer");
+        msg.reply("ik weet het ff niet meer");
     }
 });
