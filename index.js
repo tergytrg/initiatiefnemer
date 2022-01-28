@@ -122,7 +122,6 @@ client.on('message', msg => {
         } catch (error) {
             msg.channel.send(resString); // Als hij het kanaal niet kan vinden, dan stuurt ie het gewoon in hetzelfde kanaal als waar commando verzonden is.
         }
-        initList = [];
     }
 
 
