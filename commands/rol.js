@@ -1,7 +1,7 @@
 module.exports = {
   name: 'rol',
   description: 'Typo',
-  execute(msg, args) {
+  execute(msg) {
     msg.channel.send("Leer typen :)");
   },
 };
