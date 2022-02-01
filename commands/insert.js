@@ -7,7 +7,7 @@ module.exports = {
         if (args.length != 3) {
             msg.reply("dit herken ik niet. Stuur zoiets:\`!insert <rol> <bonus> <naam>\`");
         } else {
-            init.Insert(new init.Inititative(args[0], args[1], args[2]));
+            init.Insert(new init.Inititative(args[0], args[1], " " + args[2]));
             msg.reply("initiative toegevoegd: " + args.toString());
         }
     },
