@@ -2,7 +2,7 @@ const init = require('../init-list');
 
 module.exports = {
     name: 'view',
-    description: 'De lijst bekijken',
+    description: '\`!view\` : Stuurt de initiative lijst met nummertjes ervoor.',
     execute(msg) {
         if (init.List.length == 0) {
             return msg.reply("geen initiatives");

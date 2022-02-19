@@ -1,10 +1,9 @@
 module.exports = {
     Init: require('./init'),
-    Start: require('./start'),
+    New: require('./new'),
     View: require('./view'),
-    Insert: require('./insert'),
+    Custom: require('./custom'),
     Remove: require('./remove'),
-    Reset: require('./reset'),
     Help: require('./help'),
     Rol: require('./rol')
 };

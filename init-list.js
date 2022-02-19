@@ -1,3 +1,8 @@
+const initList = []; // Het hart van deze bot: De lijst met initiatives
+let initMsg;
+let initChannel;
+let lastUpdated = Date.now();
+
 function Inititative(total, bonus, user) { // Init constructor
     this.total = total;
     this.bonus = bonus;
@@ -8,7 +13,10 @@ Inititative.prototype.toString = function() {
     return this.user + ": \`" + this.total + "\`";
 }
 
-const initList = []; // Het hart van deze bot: De lijst met initiatives
+// WARNING: De kans is aanwezig dat we hier een argument krijgen wat geen echt kanaal is. Dan breekt dat de applicatie, ik moet nog een oplossing maken
+function setChannel(channel) {
+    initChannel = channel;
+}
 
 function insertInit(newInit) { // Een nieuwe Initiative invoegen
     if (initList.length == 0) {
@@ -62,9 +70,39 @@ function roll(args, user) {
     return roller + " heeft gerold: " + roll1 + " + " + bonus + " = \`" + total + "\`";
 }
 
+async function update() {
+    lastUpdated = Date.now();
+    let resString = "**__Initiative gestart:__**";
+    for (let i = 0; i < initList.length; i++) {
+        resString += "\n" + initList[i].toString();
+    }
+    try {
+        initMsg.edit(resString);
+    } catch (error) {
+        initMsg = await initChannel.send(resString);
+    }
+}
+
+async function newInit() {
+    initMsg = await initChannel.send("**__Nieuwe Initiative gestart!__**");
+    initList.length = 0;
+    lastUpdated = 0;
+}
+
+function isFresh() {
+    if (Date.now() - lastUpdated < 900000 || lastUpdated == 0) {
+        return true;
+    }
+    return false;
+}
+
 module.exports = {
     List: initList,
+    isFresh: isFresh,
+    setChannel: setChannel,
     Insert: insertInit,
     Roll: roll,
-    Inititative: Inititative,
+    Update: update,
+    New: newInit,
+    Inititative: Inititative
 };
