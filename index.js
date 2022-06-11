@@ -25,20 +25,27 @@ client.on('ready', () => {
     }
 });
 
+// Activiteit instellen
+client.on("ready", () => {
+    client.user.setPresence({
+        activities: [{ 
+          name: "D&D",
+          type: "PLAYING"
+        }],
+        status: "online"
+    })
+})
+
+
 // Zodra wij een berichtje krijgen: 
 client.on('message', msg => {
     let content;
-    if (msg.content.charAt(0) == '!') { // Even zorgen dat alles met een ! begint
-        content = msg.content.substring(1); // En dan de ! weghalen
-    } else {
-        return; // Of hij begint niet met een ! :(
-    }
+    if (!msg.content.charAt(0) == '!') return;
+    content = msg.content.substring(1); // En dan de ! weghalen
     const args = content.split(/ +/);
     const command = args.shift().toLowerCase();
     console.info(`Commando: ${command}`);
-
     if (!client.commands.has(command)) return;
-
     try {
         client.commands.get(command).execute(msg, args);
     } catch (error) {
