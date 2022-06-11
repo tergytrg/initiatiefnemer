@@ -18,24 +18,21 @@ client.login(TOKEN);
 // Zodra de bot opstart:
 client.on('ready', () => {
     console.info(`Ingelogd als ${client.user.tag}!`);
-    try { // Voor !start (initiative kanaal)
-        init.setChannel(client.channels.get(CHANNEL));
-    } catch (error) {
-        console.log(error);
-    }
-});
 
-// Activiteit instellen
-client.on("ready", () => {
     client.user.setPresence({
         activities: [{ 
           name: "D&D",
           type: "PLAYING"
         }],
         status: "online"
-    })
-})
-
+    });
+    
+    try { // Voor !start (initiative kanaal)
+        init.setChannel(client.channels.get(CHANNEL));
+    } catch (error) {
+        console.log(error);
+    }
+});
 
 // Zodra wij een berichtje krijgen: 
 client.on('message', msg => {
