@@ -26,8 +26,8 @@ client.on('ready', () => {
         }],
         status: "online"
     });
-    
-    try { // Voor !start (initiative kanaal)
+
+    try {
         init.setChannel(client.channels.get(CHANNEL));
     } catch (error) {
         console.log(error);
@@ -37,7 +37,9 @@ client.on('ready', () => {
 // Zodra wij een berichtje krijgen: 
 client.on('message', msg => {
     let content;
-    if (!msg.content.charAt(0) == '!') return;
+    if (!msg.content.charAt(0) == '!') {
+        return;
+    }
     content = msg.content.substring(1); // En dan de ! weghalen
     const args = content.split(/ +/);
     const command = args.shift().toLowerCase();
