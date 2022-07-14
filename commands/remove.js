@@ -2,14 +2,13 @@ const init = require('../init-list');
 
 module.exports = {
     name: 'remove',
-    description: '\`!remove <positie>\` : Verwijder een rol van initiative.',
+    description: '\`!remove <naam>\` : Verwijder een rol van initiative.',
     execute(msg, args) {
         if (args.length != 1) {
-            msg.reply("dit herken ik niet. Stuur zoiets: \`!remove <positie>\`");
+            msg.reply("dit herken ik niet. Stuur zoiets: \`!remove <naam>\`");
         } else {
-            init.List.splice(parseInt(args[0]), 1);
-            msg.reply("rol " + args[0] + " verwijderd!");
+            msg.reply(init.remove(args[0]));
         }
-        init.Update();
+        init.update();
     },
   };

@@ -17,6 +17,15 @@ function setChannel(channel) {
     initChannel = channel;
 }
 
+function containsName(name) {
+    for (let i = 0; i < initList.length; i++) {
+        if (initList[i].name === name) {
+            return true;
+        }
+    }
+    return false;
+}
+
 /*
 Voegt de roll toe aan de lijst en maakt het bericht om terug te sturen.
 */
@@ -30,7 +39,9 @@ function init(args, user) {
             initiative = rollList[1];
         }
     }
-    insertInitiative(initiative);
+    if (!insertInitiative(initiative)) {
+        return "Er bestaat al een initiative met de naam:" + initiative.name;
+    }
     stringOutput += "]\` Resultaat: " + initiative.total;
     return stringOutput;
 }
@@ -40,9 +51,12 @@ Gebruikt insertion sort om een Initiative op de goede plek toe te voegen aan de 
 Als de roll een gelijke totale score heeft, wordt er op bonus gesorteerd.
 */
 function insertInitiative(initiative) {
+    if (containsName(initiative.name)) {
+        return false;
+    }
     if (initList.length == 0) {
         initList[0] = initiative;
-        return;
+        return true;
     }
     let i = 0;
     while (
@@ -52,6 +66,7 @@ function insertInitiative(initiative) {
         i++;
     }
     initList.splice(i, 0, initiative);
+    return true;
 }
 
 /*
@@ -66,7 +81,7 @@ function initParser(args, user) {
 
     while (args.length > 0) {
         const arg = args.shift();
-        if (arg == "k1") {
+        if (arg === "k1") {
             k1 = true;
         } else if (isNaN(arg)) {
             name += " " + arg;
@@ -92,6 +107,42 @@ function rollInit(bonus, advantage, name) {
         rollList.push(new Inititative(secondRoll, bonus, name));
     }
     return rollList;
+}
+
+/*
+Voor het toevoegen van zelfgekozen rolls.
+*/
+function custom(args) {
+    if (isNaN(args[0]) || isNaN(args[1])) {
+        return "dit herken ik niet. Stuur zoiets:\`!custom <rol zonder bonus> <bonus> <naam>\`";
+    }
+    let bonus = parseInt(args[1]);
+    let total = parseInt(args[0]) + bonus;
+    let name = " " + args[2];
+
+    for (let i = 3; i < args.length; i++) {
+        name += " " + args[i];
+    }
+    if (!insertInitiative(new Inititative(total, bonus, name))) {
+        return "Er bestaat al een initiative met de naam:" + name;
+    }
+    return "Custom rol toegevoegd voor" + name + ": \`[" + (total - bonus)+ "]`\ Resultaat: " + total;
+}
+
+/*
+Voor het toevoegen van zelfgekozen rolls.
+*/
+function remove(name) {
+    name = " " + name;
+    if (!containsName(name)) {
+        return "Ik kan geen initiative vinden met de naam:" + name;
+    }
+    i = 0;
+    while (initList[i].name != name) {
+        i++;
+    }
+    initList.splice(i, 1);
+    return name + " succesvol verwijderd!";
 }
 
 /*
@@ -131,5 +182,7 @@ module.exports = {
     setChannel: setChannel,
     roll: init,
     update: update,
-    new: newInit
+    new: newInit,
+    custom: custom,
+    remove: remove
 };

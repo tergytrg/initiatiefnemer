@@ -1,4 +1,0 @@
-Initiatiefnemer todo:
- - Formatting na rol
- - Verwijderen en toevoegen moet makkelijker
- - Verwijderen als naam
