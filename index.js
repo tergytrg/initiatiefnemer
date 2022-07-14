@@ -37,7 +37,7 @@ client.on('ready', () => {
 // Zodra wij een berichtje krijgen: 
 client.on('message', msg => {
     let content;
-    if (!msg.content.charAt(0) == '!') {
+    if (msg.content.charAt(0) != '!') {
         return;
     }
     content = msg.content.substring(1); // En dan de ! weghalen

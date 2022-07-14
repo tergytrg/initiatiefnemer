@@ -3,73 +3,100 @@ let initMsg;
 let initChannel;
 let lastUpdated = Date.now();
 
-function Inititative(total, bonus, user) { // Init constructor
+function Inititative(total, bonus, name) { // Init constructor
     this.total = total;
     this.bonus = bonus;
-    this.user = user;
+    this.name = name;
 }
 
 Inititative.prototype.toString = function() {
-    return this.user + ": \`" + this.total + "\`";
+    return this.name + ": \`" + this.total + "\`";
 }
 
-// WARNING: De kans is aanwezig dat we hier een argument krijgen wat geen echt kanaal is. Dan breekt dat de applicatie, ik moet nog een oplossing maken
 function setChannel(channel) {
     initChannel = channel;
 }
 
-function insertInit(newInit) { // Een nieuwe Initiative invoegen
-    if (initList.length == 0) {
-        initList[0] = newInit;
-    } else {
-        let i = 0;
-        while (
-            i < initList.length &&
-            newInit.total <= initList[i].total &&
-            (newInit.total < initList[i].total || newInit.bonus < initList[i].bonus)) { // Als de total roll gelijk is, sorteert ie op bonus
-            i++; // Insertion sort ftw!!!!
+/*
+Voegt de roll toe aan de lijst en maakt het bericht om terug te sturen.
+*/
+function init(args, user) {
+    const rollList = initParser(args, user);
+    let initiative = rollList[0];
+    let stringOutput = initiative.name + " heeft gerold: \`[" + (initiative.total - initiative.bonus);
+    if (rollList.length > 1) {
+        stringOutput += ", " + (rollList[1].total - rollList[1].bonus);
+        if (rollList[1].total > rollList[0].total) {
+            initiative = rollList[1];
         }
-        initList.splice(i, 0, newInit); // Invoegen
     }
+    insertInitiative(initiative);
+    stringOutput += "]\` Resultaat: " + initiative.total;
+    return stringOutput;
 }
 
-// het meest gebruikte commando; de init roll:
-function roll(args, user) {
-    const roll1 = Math.ceil(Math.random() * 20);
+/*
+Gebruikt insertion sort om een Initiative op de goede plek toe te voegen aan de lijst.
+Als de roll een gelijke totale score heeft, wordt er op bonus gesorteerd.
+*/
+function insertInitiative(initiative) {
+    if (initList.length == 0) {
+        initList[0] = initiative;
+        return;
+    }
+    let i = 0;
+    while (
+        i < initList.length &&
+        initiative.total <= initList[i].total &&
+        (initiative.total < initList[i].total || initiative.bonus < initList[i].bonus)) {
+        i++;
+    }
+    initList.splice(i, 0, initiative);
+}
+
+/*
+Gaat langs alle arguments nadat iemand '!init' heeft gebruikt. Dan checkt ie of er advantage
+is, of er een naam is, en of er een bonus is. Als er geen naam is, wordt de discord-naam
+van de gebruiker gebruikt.
+*/
+function initParser(args, user) {
     let bonus = 0;
-    let roller = "";
+    let name = "";
     let k1 = false;
 
-    while (args.length > 0) { // Alle args bijlangs gaan en kijken wat ze doen
+    while (args.length > 0) {
         const arg = args.shift();
         if (arg == "k1") {
             k1 = true;
         } else if (isNaN(arg)) {
-            roller += " " + arg;
+            name += " " + arg;
         } else {
             bonus = parseInt(arg);
         }
     }
-    if (roller === "") {
-        roller = " " + user; // Als er geen naam bij zit, wordt de stuurder genoemd.
+    if (name === "") {
+        name = " " + user;
     }
-    // Met advantage:
-    if (k1) {
-        const roll2 = Math.ceil(Math.random() * 20); // Dus nog een dobbelsteen gooien
-        let total = roll2;
-        if (roll1 > roll2) {
-            total = roll1;
-        }
-        total += bonus;
-        insertInit(new Inititative(total, bonus, roller)); // nieuw ding maken en toevoegen
-        return roller + " heeft gerold: [" + roll1 + ",  " + roll2 + "] + " + bonus + " = \`" + total + "\`";
-    }
-    // Zonder advantage:
-    const total = roll1 + bonus;
-    insertInit(new Inititative(total, bonus, roller)); // nieuw ding maken en toevoegen
-    return roller + " heeft gerold: " + roll1 + " + " + bonus + " = \`" + total + "\`";
+    return rollInit(bonus, k1, name);
 }
 
+/*
+Genereert wilekeurig de uitkomst en geeft vervolgens een lijst van Initiative.
+*/
+function rollInit(bonus, advantage, name) {
+    const roll = Math.ceil(Math.random() * 20) + bonus;
+    const rollList = [];
+    rollList.push(new Inititative(roll, bonus, name));
+    if (advantage) {
+        const secondRoll = Math.ceil(Math.random() * 20) + bonus;
+        rollList.push(new Inititative(secondRoll, bonus, name));
+    }
+    return rollList;
+}
+
+/*
+Updatet het bericht met de complete lijst.
+*/
 async function update() {
     lastUpdated = Date.now();
     let resString = "**__Initiative gestart:__**";
@@ -83,6 +110,9 @@ async function update() {
     }
 }
 
+/*
+Maakt een nieuwe lijst.
+*/
 async function newInit() {
     initMsg = await initChannel.send("**__Nieuwe Initiative gestart!__**");
     initList.length = 0;
@@ -90,19 +120,16 @@ async function newInit() {
 }
 
 function isFresh() {
-    if (Date.now() - lastUpdated < 900000 || lastUpdated == 0) {
+    if (Date.now() - lastUpdated < 1800000 || lastUpdated == 0) {
         return true;
     }
     return false;
 }
 
 module.exports = {
-    List: initList,
     isFresh: isFresh,
     setChannel: setChannel,
-    Insert: insertInit,
-    Roll: roll,
-    Update: update,
-    New: newInit,
-    Inititative: Inititative
+    roll: init,
+    update: update,
+    new: newInit
 };

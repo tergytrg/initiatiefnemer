@@ -5,6 +5,6 @@ module.exports = {
     description: '\`!new\` : Maakt een nieuwe initiative.',
     execute(msg) {
         msg.reply("Initiative gestart!");
-        init.New();
+        init.new();
     },
   };

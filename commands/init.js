@@ -7,7 +7,7 @@ module.exports = {
         if (!init.isFresh()) {
             msg.channel.send("**Pas op!**\nJe bent nu rolls aan een oude initiative aan het toevoegen. Je kunt een nieuwe initiative maken met !new");
         }
-        msg.channel.send(init.Roll(args, msg.author));
-        init.Update();
+        msg.channel.send(init.roll(args, msg.author));
+        init.update();
     },
   };
