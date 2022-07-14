@@ -132,8 +132,11 @@ function custom(args) {
 /*
 Voor het toevoegen van zelfgekozen rolls.
 */
-function remove(name) {
-    name = " " + name;
+function remove(args) {
+    let name = "";
+    for (let i = 0; i < args.length; i++) {
+        name += " " + args[i];
+    }
     if (!containsName(name)) {
         return "Ik kan geen initiative vinden met de naam:" + name;
     }
